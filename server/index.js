@@ -1,10 +1,7 @@
 import http from "node:http";
 import { existsSync as exists } from "node:fs";
+import { REFERRER_WHITELIST } from "./utils/consts.js";
 
-const REFERRER_WHITELIST = [
-  'api.local.host',
-  'client.local.host',
-];
 
 const server = http.createServer(async (req, res) => {
   if (req.headers.referer && REFERRER_WHITELIST.includes(new URL(req.headers.referer).hostname)) {

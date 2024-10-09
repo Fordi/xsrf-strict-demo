@@ -1,10 +1,7 @@
+import { parseCookies } from "../utils/cookies.js";
+
 export default (req, res) => {
-  const cookies = (req.headers.cookie ?? "").split(';').reduce((o, c) => {
-    const [name, ...value] = c.split('=');
-    o[name.trim()] = value.join('=').trim();
-    return o;
-  }, {});
-  console.log(cookies);
+  const cookies = parseCookies(req.headers.cookie)
   if (cookies.authCookie === '12345') {
     res.writeHead(200);
     res.write("You're good.");

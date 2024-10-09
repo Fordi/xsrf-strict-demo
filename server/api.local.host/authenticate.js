@@ -1,13 +1,7 @@
-
-const formatCookies = (name, value, options) => [
-  `${name}=${value}`,
-  ...Object.entries(options).map(([key, setting]) => (
-    setting && (setting === true ? key : `${key}=${setting}`)
-  ))
-].join('; ');
+import { formatCookie } from "../utils/cookies.js";
 
 export default (req, res) => {
-  res.setHeader("set-cookie", formatCookies("authCookie", "12345", {
+  res.setHeader("set-cookie", formatCookie("authCookie", "12345", {
     HttpOnly: true,
     SameSite: "Strict",
     Domain: ".local.host",
