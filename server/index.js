@@ -1,7 +1,13 @@
 import http from "node:http";
 import { existsSync as exists } from "node:fs";
-import { REFERRER_WHITELIST } from "./utils/consts.js";
+import { join } from "node:path";
+import { REFERRER_WHITELIST, SERVER_ROOT } from "./utils/consts.js";
 
+const getHandler = async (script, method) => {
+  if (!exists(script)) return false;
+  const module = await import(script);
+  return module[method] ?? module.default;
+};
 
 const server = http.createServer(async (req, res) => {
   if (req.headers.referer && REFERRER_WHITELIST.includes(new URL(req.headers.referer).hostname)) {
@@ -10,15 +16,16 @@ const server = http.createServer(async (req, res) => {
     res.setHeader("vary", "Origin");
   }
   const host = req.headers.host.replace(/:\d+$/, '');
-  let script = new URL(`${host}${req.url}.js`, import.meta.url).pathname;
-  if (!exists(script)) {
-    script = new URL(`${host}/index.js`, import.meta.url).pathname;
+  const method = req.method.toLowerCase();
+  let path = req.url.replace(/^\//, '');
+  if (path.endsWith('/') || path === '') {
+    path += 'index';
   }
-  if (!exists(script)) {
-    script = new URL(`404.js`, import.meta.url).pathname;
+  let handler = await getHandler(join(SERVER_ROOT, host, `${path}.js`), method);
+  if (!handler) {
+    handler = await getHandler(join(SERVER_ROOT, '404.js'), method);
   }
-  const module = await import(script);
-  return module[req.method] ?? module.default(req, res);
+  return handler(req, res);
 });
 
 server.listen(8080, 'localhost', () => {

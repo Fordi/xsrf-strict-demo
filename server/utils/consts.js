@@ -3,3 +3,4 @@ export const REFERRER_WHITELIST = [
   'api.local.host',
   'client.local.host',
 ];
+export const SERVER_ROOT = new URL("../../server", import.meta.url).pathname;

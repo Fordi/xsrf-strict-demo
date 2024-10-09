@@ -1,6 +1,6 @@
 import { parseCookies } from "../utils/cookies.js";
 
-export default (req, res) => {
+export const post = (req, res) => {
   const cookies = parseCookies(req.headers.cookie)
   if (cookies.authCookie === '12345') {
     res.writeHead(200);

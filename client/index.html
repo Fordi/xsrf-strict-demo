@@ -9,7 +9,7 @@
       const apiCall = { mode: "cors", credentials: "include" };
       const authenticated = await fetch("http://api.local.host:8080/authenticate", apiCall).then(r => r.json());
       if (authenticated) {
-        document.write(await fetch("http://api.local.host:8080/makeApiCall", apiCall).then(r => r.text()));
+        document.write(await fetch("http://api.local.host:8080/makeApiCall", { ...apiCall, method: 'post' }).then(r => r.text()));
       } else {
         document.write("Auth failed");
       }
