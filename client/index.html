@@ -5,5 +5,10 @@
       <title>Hello, world</title>
   </head>
   <body>
+    <script type="module">
+      const apiCall = { mode: "cors", credentials: "include" };
+      await fetch("http://api.local.host:8080/authenticate", apiCall).then(r => r.text());
+      document.write(await fetch("http://api.local.host:8080/makeApiCall", apiCall).then(r => r.text()));
+    </script>
   </body>
 </html>
